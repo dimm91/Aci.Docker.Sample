@@ -1,0 +1,58 @@
+version: '3.9'
+
+services:
+    # It is not necessary to have the image of the DB on ACI since we are creating first a Sql Server on azure
+    # sql-db:
+    #     image: mcr.microsoft.com/mssql/server:2017-latest
+    #     environment:
+    #         - ACCEPT_EULA=Y
+    #         - SA_PASSWORD=DockerSwarm2022
+    #     ports:
+    #         - "1433:1433"
+            
+    user-api: 
+        image: acisampleregistry2022.azurecr.io/user-api:v1
+        build: ./user-api/User.Web.Api/
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Aci
+            # Deploy net app in a different port
+            - ASPNETCORE_URLS=http://localhost:82
+        deploy:
+            resources:
+                limits:
+                    cpus: '0.5'
+                    memory: 1GB
+
+    product-api:
+        image: acisampleregistry2022.azurecr.io/product-api:v1
+        build: ./product-api/Product.Web.Api/
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Aci
+            # Deploy net app in a different port
+            - ASPNETCORE_URLS=http://localhost:81
+        deploy:
+            resources:
+                limits:
+                    cpus: '0.5'
+                    memory: 1GB
+
+    ui-web:
+        # The image CANNOT be empty and should be on lowercase (otherwise it throws an authentication error `acr`)
+        image: acisampleregistry2022.azurecr.io/ui-web:v1
+        build: ./web-ui/Web.Client.Ui/Web.Client.Ui
+        ports:
+            -  "80:80"
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Aci
+        depends_on:
+            - product-api
+            - user-api        
+        deploy:
+            resources:
+                limits:
+                    cpus: '0.5'
+                    memory: 1GB
+
+# Since it will be deploying it into ACI we don't need to create a custom network
+# networks:
+#   custom-network:
