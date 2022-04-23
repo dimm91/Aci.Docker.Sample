@@ -15,8 +15,8 @@
 > Azure Container Instances (ACI) is a managed service that allows you to run containers directly on the public cloud. By design, it is not intended to be a full orchestration platform.
 
 For this example there are 3 shell scripts:
-* [azure-Commands.sh](azure-Commands.sh) 
-* [docker-Commands.sh](docker-Commands.sh) 
+* [azure-commands.sh](azure-Commands.sh) 
+* [docker-commands.sh](docker-Commands.sh) 
 * [remove-resources.sh](remove-resources.sh) 
 
 
